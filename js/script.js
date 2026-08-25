@@ -24,11 +24,22 @@ function renderizarTarefas(taskList) {
   ulTask.textContent = "";
   taskList.forEach((task) => {
     const newLi = document.createElement("li");
-    newLi.textContent = task.texto;
+    const newInput = document.createElement("input");
+    const newLabel = document.createElement("label");
+    const newButton = document.createElement("button");
+    const taskId = `task-${task.id}`;
+    newInput.setAttribute("type", "checkbox");
+    newInput.setAttribute("id", taskId);
+    newInput.checked = task.concluida;
+    newLabel.setAttribute("for", taskId);
+    newLabel.textContent = task.texto;
     newLi.setAttribute("data-id", task.id);
+    newButton.textContent = "Excluir";
+    newLi.append(newInput, newLabel, newButton);
     if (task.concluida) {
       newLi.classList.add("concluida");
     }
+
     ulTask.appendChild(newLi);
   });
 }
@@ -56,11 +67,17 @@ form.addEventListener("submit", (event) => {
 });
 
 ulTask.addEventListener("click", (event) => {
-  const clickDataSet = +event.target.dataset.id;
-
+  const taskParent = event.target.parentElement;
+  const clickDataSet = +taskParent.dataset.id;
   const searchTask = taskList.find((task) => task.id === clickDataSet);
 
-  searchTask.concluida = !searchTask.concluida;
+  if (event.target.tagName === "INPUT" || event.target.tagName === "LABEL") {
+    searchTask.concluida = !searchTask.concluida;
+  }
 
+  if (event.target.tagName === "BUTTON") {
+    const indexTask = taskList.findIndex((task) => task.id === clickDataSet);
+    taskList.splice(indexTask, 1);
+  }
   renderizarTarefas(taskList);
 });
