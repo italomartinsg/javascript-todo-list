@@ -2,14 +2,7 @@ const form = document.querySelector("form");
 const input = document.querySelector(".texto");
 const ulTask = document.querySelector(".task-list");
 
-//modelo de objetos para teste
-//  { id: 1, texto: "Estudar JavaScript", concluida: false },  { id: 2, texto: "Estudar DOM", concluida: false },  { id: 3, texto: "Praticar Arrays", concluida: false }
-
-const taskList = [
-  { id: 1, texto: "Estudar JavaScript", concluida: false },
-  { id: 2, texto: "Estudar DOM", concluida: false },
-  { id: 3, texto: "Praticar Arrays", concluida: false },
-];
+const taskList = [];
 function gerarId(taskList) {
   const maiorID = taskList.reduce((acumulador, atual) => {
     if (atual.id > acumulador) {
@@ -20,6 +13,11 @@ function gerarId(taskList) {
 
   return maiorID + 1;
 }
+function saveTasks(taskList) {
+  const stringTask = JSON.stringify(taskList);
+  localStorage.setItem("tasks", stringTask);
+}
+
 function renderizarTarefas(taskList) {
   ulTask.textContent = "";
   taskList.forEach((task) => {
@@ -44,7 +42,17 @@ function renderizarTarefas(taskList) {
   });
 }
 
-renderizarTarefas(taskList);
+function loadTasks() {
+  const storedTasks = localStorage.getItem("tasks");
+  if (storedTasks) {
+    const tasksObj = JSON.parse(storedTasks);
+
+    taskList.push(...tasksObj);
+  }
+  renderizarTarefas(taskList);
+}
+
+loadTasks();
 
 form.addEventListener("submit", (event) => {
   event.preventDefault();
@@ -59,6 +67,7 @@ form.addEventListener("submit", (event) => {
 
     taskList.push(task);
     input.value = "";
+    saveTasks(taskList);
     renderizarTarefas(taskList);
   } else {
     console.log("texto inválido, entrando no return");
@@ -73,11 +82,13 @@ ulTask.addEventListener("click", (event) => {
 
   if (event.target.tagName === "INPUT" || event.target.tagName === "LABEL") {
     searchTask.concluida = !searchTask.concluida;
+    saveTasks(taskList);
   }
 
   if (event.target.tagName === "BUTTON") {
     const indexTask = taskList.findIndex((task) => task.id === clickDataSet);
     taskList.splice(indexTask, 1);
+    saveTasks(taskList);
   }
   renderizarTarefas(taskList);
 });
