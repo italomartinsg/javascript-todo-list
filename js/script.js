@@ -2,7 +2,20 @@ const form = document.querySelector("form");
 const input = document.querySelector(".texto");
 const ulTask = document.querySelector(".task-list");
 const taskList = [];
+const btns = document.querySelector(".btns");
+let filterActive = "all";
 
+function getFilteredTasks() {
+  if (filterActive === "all") {
+    return taskList;
+  }
+  if (filterActive === "pending") {
+    return taskList.filter((task) => task.concluida === false);
+  }
+  if (filterActive === "completed") {
+    return taskList.filter((task) => task.concluida === true);
+  }
+}
 function gerarId(taskList) {
   const maiorID = taskList.reduce((acumulador, atual) => {
     if (atual.id > acumulador) {
@@ -46,7 +59,7 @@ function renderizarTarefas(taskList) {
 }
 function syncTasks() {
   saveTasks(taskList);
-  renderizarTarefas(taskList);
+  renderizarTarefas(getFilteredTasks());
 }
 
 function finalizarEdicao(task, newText) {
@@ -85,6 +98,11 @@ form.addEventListener("submit", (event) => {
     return;
   }
 });
+btns.addEventListener("click", (event) => {
+  const filter = event.target.dataset.filter;
+  filterActive = filter;
+  renderizarTarefas(getFilteredTasks());
+});
 ulTask.addEventListener("click", (event) => {
   const taskParent = event.target.parentElement;
   const clickDataSet = +taskParent.dataset.id;
@@ -113,7 +131,7 @@ ulTask.addEventListener("click", (event) => {
         if (event.key === "Enter") {
           finalizarEdicao(searchTask, inputTask.value);
         } else if (event.key === "Escape") {
-          renderizarTarefas(taskList);
+          renderizarTarefas(getFilteredTasks());
         }
       });
     } else if (event.target.dataset.action === "save") {
