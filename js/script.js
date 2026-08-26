@@ -63,8 +63,13 @@ function syncTasks() {
 }
 
 function finalizarEdicao(task, newText) {
-  task.texto = newText;
-  syncTasks();
+  const clearText = newText.trim();
+  if (clearText) {
+    task.texto = clearText;
+    syncTasks();
+  } else {
+    renderizarTarefas(getFilteredTasks());
+  }
 }
 
 function loadTasks() {
@@ -100,6 +105,9 @@ form.addEventListener("submit", (event) => {
 });
 btns.addEventListener("click", (event) => {
   const filter = event.target.dataset.filter;
+  if (!filter) {
+    return;
+  }
   filterActive = filter;
   renderizarTarefas(getFilteredTasks());
 });
