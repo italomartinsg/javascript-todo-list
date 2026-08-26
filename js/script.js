@@ -3,6 +3,7 @@ const input = document.querySelector(".texto");
 const ulTask = document.querySelector(".task-list");
 const taskList = [];
 const btns = document.querySelector(".btns");
+const taskCounter = document.querySelector(".task-counter");
 let filterActive = "all";
 
 function getFilteredTasks() {
@@ -14,6 +15,17 @@ function getFilteredTasks() {
   }
   if (filterActive === "completed") {
     return taskList.filter((task) => task.concluida === true);
+  }
+}
+function syncTaskCounter() {
+  const pendingCount = taskList.filter(
+    (task) => task.concluida === false,
+  ).length;
+
+  if (pendingCount === 1) {
+    taskCounter.textContent = `${pendingCount} tarefa pendente!`;
+  } else {
+    taskCounter.textContent = `${pendingCount} tarefas pendentes!`;
   }
 }
 function gerarId(taskList) {
@@ -60,6 +72,7 @@ function renderizarTarefas(taskList) {
 function syncTasks() {
   saveTasks(taskList);
   renderizarTarefas(getFilteredTasks());
+  syncTaskCounter();
 }
 
 function finalizarEdicao(task, newText) {
@@ -80,8 +93,8 @@ function loadTasks() {
     taskList.push(...tasksObj);
   }
   renderizarTarefas(taskList);
+  syncTaskCounter();
 }
-
 loadTasks();
 
 form.addEventListener("submit", (event) => {
