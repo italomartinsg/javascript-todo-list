@@ -1,8 +1,8 @@
 const form = document.querySelector("form");
 const input = document.querySelector(".texto");
 const ulTask = document.querySelector(".task-list");
-
 const taskList = [];
+
 function gerarId(taskList) {
   const maiorID = taskList.reduce((acumulador, atual) => {
     if (atual.id > acumulador) {
@@ -17,14 +17,14 @@ function saveTasks(taskList) {
   const stringTask = JSON.stringify(taskList);
   localStorage.setItem("tasks", stringTask);
 }
-
 function renderizarTarefas(taskList) {
   ulTask.textContent = "";
   taskList.forEach((task) => {
     const newLi = document.createElement("li");
     const newInput = document.createElement("input");
     const newLabel = document.createElement("label");
-    const newButton = document.createElement("button");
+    const newButtonEdit = document.createElement("button");
+    const newButtonDelete = document.createElement("button");
     const taskId = `task-${task.id}`;
     newInput.setAttribute("type", "checkbox");
     newInput.setAttribute("id", taskId);
@@ -32,14 +32,26 @@ function renderizarTarefas(taskList) {
     newLabel.setAttribute("for", taskId);
     newLabel.textContent = task.texto;
     newLi.setAttribute("data-id", task.id);
-    newButton.textContent = "Excluir";
-    newLi.append(newInput, newLabel, newButton);
+    newButtonEdit.textContent = "Editar";
+    newButtonEdit.setAttribute("data-action", "edit");
+    newButtonDelete.textContent = "Excluir";
+    newButtonDelete.setAttribute("data-action", "delete");
+    newLi.append(newInput, newLabel, newButtonEdit, newButtonDelete);
     if (task.concluida) {
       newLi.classList.add("concluida");
     }
 
     ulTask.appendChild(newLi);
   });
+}
+function syncTasks() {
+  saveTasks(taskList);
+  renderizarTarefas(taskList);
+}
+
+function finalizarEdicao(task, newText) {
+  task.texto = newText;
+  syncTasks();
 }
 
 function loadTasks() {
@@ -67,28 +79,50 @@ form.addEventListener("submit", (event) => {
 
     taskList.push(task);
     input.value = "";
-    saveTasks(taskList);
-    renderizarTarefas(taskList);
+    syncTasks();
   } else {
     console.log("texto inválido, entrando no return");
     return;
   }
 });
-
 ulTask.addEventListener("click", (event) => {
   const taskParent = event.target.parentElement;
   const clickDataSet = +taskParent.dataset.id;
   const searchTask = taskList.find((task) => task.id === clickDataSet);
 
-  if (event.target.tagName === "INPUT" || event.target.tagName === "LABEL") {
+  if (event.target.type === "checkbox" || event.target.tagName === "LABEL") {
     searchTask.concluida = !searchTask.concluida;
-    saveTasks(taskList);
+    syncTasks();
   }
 
   if (event.target.tagName === "BUTTON") {
-    const indexTask = taskList.findIndex((task) => task.id === clickDataSet);
-    taskList.splice(indexTask, 1);
-    saveTasks(taskList);
+    if (event.target.dataset.action === "edit") {
+      const labelTask = taskParent.querySelector("label");
+      const inputTask = document.createElement("input");
+      inputTask.setAttribute("type", "text");
+      inputTask.value = searchTask.texto;
+
+      if (labelTask) {
+        labelTask.replaceWith(inputTask);
+        inputTask.focus();
+      }
+
+      event.target.textContent = "Salvar";
+      event.target.setAttribute("data-action", "save");
+      inputTask.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+          finalizarEdicao(searchTask, inputTask.value);
+        } else if (event.key === "Escape") {
+          renderizarTarefas(taskList);
+        }
+      });
+    } else if (event.target.dataset.action === "save") {
+      const inputTask = taskParent.querySelector("input[type='text']");
+      finalizarEdicao(searchTask, inputTask.value);
+    } else if (event.target.dataset.action === "delete") {
+      const indexTask = taskList.findIndex((task) => task.id === clickDataSet);
+      taskList.splice(indexTask, 1);
+      syncTasks();
+    }
   }
-  renderizarTarefas(taskList);
 });
