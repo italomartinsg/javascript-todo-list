@@ -16,6 +16,7 @@ function getFilteredTasks() {
   if (filterActive === "completed") {
     return taskList.filter((task) => task.concluida === true);
   }
+  return taskList;
 }
 function syncTaskCounter() {
   const pendingCount = taskList.filter(
@@ -109,20 +110,18 @@ form.addEventListener("submit", (event) => {
   event.preventDefault();
   const inputValue = input.value.trim();
 
-  if (inputValue) {
-    const task = {
-      id: gerarId(taskList),
-      texto: inputValue,
-      concluida: false,
-    };
-
-    taskList.push(task);
-    input.value = "";
-    syncTasks();
-  } else {
-    console.log("texto inválido, entrando no return");
+  if (!inputValue) {
     return;
   }
+  const task = {
+    id: gerarId(taskList),
+    texto: inputValue,
+    concluida: false,
+  };
+
+  taskList.push(task);
+  input.value = "";
+  syncTasks();
 });
 btns.addEventListener("click", (event) => {
   const filter = event.target.dataset.filter;
@@ -137,7 +136,7 @@ ulTask.addEventListener("click", (event) => {
   const clickDataSet = +taskParent.dataset.id;
   const searchTask = taskList.find((task) => task.id === clickDataSet);
   if (!searchTask) {
-    return undefined;
+    return;
   }
   if (event.target.type === "checkbox" || event.target.tagName === "LABEL") {
     searchTask.concluida = !searchTask.concluida;
@@ -167,6 +166,9 @@ ulTask.addEventListener("click", (event) => {
       });
     } else if (event.target.dataset.action === "save") {
       const inputTask = taskParent.querySelector("input[type='text']");
+      if (!inputTask) {
+        return;
+      }
       finalizarEdicao(searchTask, inputTask.value);
     } else if (event.target.dataset.action === "delete") {
       const indexTask = taskList.findIndex((task) => task.id === clickDataSet);
