@@ -88,9 +88,17 @@ function finalizarEdicao(task, newText) {
 function loadTasks() {
   const storedTasks = localStorage.getItem("tasks");
   if (storedTasks) {
-    const tasksObj = JSON.parse(storedTasks);
-
-    taskList.push(...tasksObj);
+    try {
+      const tasksObj = JSON.parse(storedTasks);
+      if (Array.isArray(tasksObj)) {
+        taskList.push(...tasksObj);
+      } else {
+        localStorage.removeItem("tasks");
+      }
+    } catch {
+      console.log("Dados das tarefas inválidos.");
+      localStorage.removeItem("tasks");
+    }
   }
   renderizarTarefas(taskList);
   syncTaskCounter();
@@ -128,7 +136,9 @@ ulTask.addEventListener("click", (event) => {
   const taskParent = event.target.parentElement;
   const clickDataSet = +taskParent.dataset.id;
   const searchTask = taskList.find((task) => task.id === clickDataSet);
-
+  if (!searchTask) {
+    return undefined;
+  }
   if (event.target.type === "checkbox" || event.target.tagName === "LABEL") {
     searchTask.concluida = !searchTask.concluida;
     syncTasks();
@@ -160,8 +170,10 @@ ulTask.addEventListener("click", (event) => {
       finalizarEdicao(searchTask, inputTask.value);
     } else if (event.target.dataset.action === "delete") {
       const indexTask = taskList.findIndex((task) => task.id === clickDataSet);
-      taskList.splice(indexTask, 1);
-      syncTasks();
+      if (indexTask !== -1) {
+        taskList.splice(indexTask, 1);
+        syncTasks();
+      }
     }
   }
 });
