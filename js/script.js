@@ -3,7 +3,8 @@ const input = document.querySelector(".texto");
 const ulTask = document.querySelector(".task-list");
 const taskList = [];
 const btns = document.querySelector(".btns");
-const taskCounter = document.querySelector(".task-counter");
+
+const filterCounters = document.querySelectorAll("[data-count]");
 let filterActive = "all";
 
 function getFilteredTasks() {
@@ -18,17 +19,24 @@ function getFilteredTasks() {
   }
   return taskList;
 }
-function syncTaskCounter() {
-  const pendingCount = taskList.filter(
-    (task) => task.concluida === false,
-  ).length;
 
-  if (pendingCount === 1) {
-    taskCounter.textContent = `${pendingCount} tarefa pendente!`;
-  } else {
-    taskCounter.textContent = `${pendingCount} tarefas pendentes!`;
-  }
+function syncFilterCounters() {
+  filterCounters.forEach((filter) => {
+    if (filter.dataset.count === "all") {
+      filter.textContent = taskList.length;
+      console.log(taskList.length);
+    } else if (filter.dataset.count === "pending") {
+      filter.textContent = taskList.filter(
+        (task) => task.concluida === false,
+      ).length;
+    } else {
+      filter.textContent = taskList.filter(
+        (task) => task.concluida === true,
+      ).length;
+    }
+  });
 }
+
 function gerarId(taskList) {
   const maiorID = taskList.reduce((acumulador, atual) => {
     if (atual.id > acumulador) {
@@ -75,7 +83,7 @@ function renderizarTarefas(taskList) {
 function syncTasks() {
   saveTasks(taskList);
   renderizarTarefas(getFilteredTasks());
-  syncTaskCounter();
+  syncFilterCounters();
 }
 
 function finalizarEdicao(task, newText) {
@@ -104,7 +112,7 @@ function loadTasks() {
     }
   }
   renderizarTarefas(taskList);
-  syncTaskCounter();
+  syncFilterCounters();
 }
 loadTasks();
 
@@ -126,16 +134,20 @@ form.addEventListener("submit", (event) => {
   syncTasks();
 });
 btns.addEventListener("click", (event) => {
-  const filter = event.target.dataset.filter;
-  if (!filter) {
+  const filterButton = event.target.closest("button[data-filter]");
+  console.log(filterButton);
+
+  if (!filterButton) {
     return;
   }
+  const filter = filterButton.dataset.filter;
   const btnsChildren = [...btns.children];
   btnsChildren.forEach((btn) => {
     btn.classList.remove("active");
   });
-  event.target.classList.add("active");
+  filterButton.classList.add("active");
   filterActive = filter;
+
   renderizarTarefas(getFilteredTasks());
 });
 ulTask.addEventListener("click", (event) => {
@@ -156,7 +168,7 @@ ulTask.addEventListener("click", (event) => {
       const inputTask = document.createElement("input");
       inputTask.setAttribute("type", "text");
       inputTask.value = searchTask.texto;
-
+      inputTask.classList.add("task-edit-input");
       if (labelTask) {
         labelTask.replaceWith(inputTask);
         inputTask.focus();
@@ -173,9 +185,11 @@ ulTask.addEventListener("click", (event) => {
       });
     } else if (event.target.dataset.action === "save") {
       const inputTask = taskParent.querySelector("input[type='text']");
+
       if (!inputTask) {
         return;
       }
+
       finalizarEdicao(searchTask, inputTask.value);
     } else if (event.target.dataset.action === "delete") {
       const indexTask = taskList.findIndex((task) => task.id === clickDataSet);

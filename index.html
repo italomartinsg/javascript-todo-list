@@ -11,20 +11,26 @@
 <body>
   <div class="container">
     <form>
-      <h1>To-Do List</h1>
-      <label for="texto">Adicionar Tarefa:</label>
+      <h1><svg class="title-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" />
+          <path d="M8 12l2.5 2.5L16 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>To-Do List</h1>
+      <p class="subtitulo">Organize suas tarefas e seja mais produtivo</p>
+
       <div class="task-form-row">
-        <input type=" text" class="texto" id="texto">
-        <button type="submit" id="btn-add">Adicionar</button>
+        <input type=" text" class="texto" id="texto" placeholder="Adicione uma nova tarefa...">
+        <button type="submit" id="btn-add">Adicionar <svg class="btn-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" />
+            <path d="M12 8v8M8 12h8" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          </svg></button>
       </div>
 
     </form>
     <div class="btns">
-      <button type="button" data-filter="all" class="active">Todas Tarefas</button>
-      <button type="button" data-filter="pending">Tarefas Pendentes</button>
-      <button type="button" data-filter="completed">Tarefas Concluídas</button>
+      <button type="button" data-filter="all" class="active">Todas Tarefas<span data-count="all">0</span></button>
+      <button type="button" data-filter="pending">Tarefas Pendentes<span data-count="pending"">0</span></button>
+      <button type=" button" data-filter="completed">Tarefas Concluídas<span data-count="completed">0</span></button>
     </div>
-    <p class="task-counter"></p>
     <ul class="task-list">
     </ul>
 
