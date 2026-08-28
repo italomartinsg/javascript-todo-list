@@ -78,8 +78,8 @@ form label {
   justify-content: center;
   gap: 6px;
   padding: 10px 40px;
+  background-color: #2563eb;
   color: #ffffff;
-  background: #2563eb;
   border: none;
   border-radius: 6px;
   cursor: pointer;
@@ -118,9 +118,9 @@ form label {
   font-weight: 600;
 }
 
-.btns button.active [data-count] {
-  background-color: rgba(255, 255, 255, 0.2);
-  color: #ffffff;
+.btns button.active[data-count] {
+  background-color: #bfdbfe;
+  color: #1d4ed8;
 }
 
 .btns button:hover {
@@ -128,7 +128,7 @@ form label {
 }
 
 .btns button.active {
-  background: #2563eb;
+  background: #367be8;
   color: #ffffff;
 }
 .task-counter {
@@ -194,12 +194,13 @@ button[data-action="save"]:hover {
 }
 
 @media (max-width: 500px) {
-  .task-form-row {
-    gap: 5px;
-  }
   .container {
     padding: 20px;
   }
+  .task-form-row {
+    gap: 5px;
+  }
+
   #btn-add {
     padding: 10px 15px;
   }
@@ -211,8 +212,20 @@ button[data-action="save"]:hover {
   .btns button:first-child {
     grid-column: 1 / -1;
   }
+  .task-list li.editing {
+    flex-wrap: wrap;
+  }
+
+  .task-list li.editing .task-edit-input {
+    flex: 1 1 80%;
+    min-width: 0;
+  }
+
+  .task-list li.editing .task-action {
+    flex-shrink: 0;
+  }
 }
-@media (max-width: 380px) {
+@media (max-width: 400px) {
   .task-form-row {
     flex-direction: column;
   }
@@ -229,8 +242,23 @@ button[data-action="save"]:hover {
   }
 }
 
-@media (max-width: 300px) {
+@media (max-width: 340px) {
+  .btns {
+    grid-template-columns: 1fr;
+  }
+
+  .btns button:first-child {
+    grid-column: auto;
+  }
   .task-list li {
     padding: 10px 0;
+  }
+  .task-list li.editing {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .task-list li.editing .task-action {
+    width: 100%;
   }
 }

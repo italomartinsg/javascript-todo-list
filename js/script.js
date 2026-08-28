@@ -24,7 +24,6 @@ function syncFilterCounters() {
   filterCounters.forEach((filter) => {
     if (filter.dataset.count === "all") {
       filter.textContent = taskList.length;
-      console.log(taskList.length);
     } else if (filter.dataset.count === "pending") {
       filter.textContent = taskList.filter(
         (task) => task.concluida === false,
@@ -135,7 +134,6 @@ form.addEventListener("submit", (event) => {
 });
 btns.addEventListener("click", (event) => {
   const filterButton = event.target.closest("button[data-filter]");
-  console.log(filterButton);
 
   if (!filterButton) {
     return;
@@ -164,6 +162,7 @@ ulTask.addEventListener("click", (event) => {
 
   if (event.target.tagName === "BUTTON") {
     if (event.target.dataset.action === "edit") {
+      taskParent.classList.add("editing");
       const labelTask = taskParent.querySelector("label");
       const inputTask = document.createElement("input");
       inputTask.setAttribute("type", "text");
