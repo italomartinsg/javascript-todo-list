@@ -4,6 +4,10 @@ Aplicação de gerenciamento de tarefas desenvolvida com JavaScript Vanilla.
 
 O projeto permite criar, editar, excluir e marcar tarefas como concluídas, além de filtrar as tarefas por status. Os dados são armazenados no LocalStorage, mantendo as tarefas salvas mesmo após fechar ou atualizar a página.
 
+## Demo
+
+[Acessar aplicação](https://italomartinsg.github.io/javascript-todo-list/)
+
 ## Preview
 
 ![Preview da aplicação](./assets/todo-desktop.png)
@@ -53,19 +57,13 @@ Durante o desenvolvimento do projeto, trabalhei principalmente com:
 Clone o repositório:
 
 ```bash
-git clone URL-DO-REPOSITORIO
+git clone https://github.com/italomartinsg/javascript-todo-list.git
 ```
 
 Acesse a pasta do projeto:
 
 ```bash
-cd NOME-DO-REPOSITORIO
+cd javascript-todo-list
 ```
 
 Depois, abra o arquivo `index.html` no navegador.
-
-## Deploy
-
-O projeto será publicado utilizando GitHub Pages.
-
-O link será adicionado após a publicação.
