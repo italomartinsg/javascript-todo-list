@@ -60,8 +60,10 @@ function renderizarTarefas(taskList) {
     newLi.setAttribute("data-id", task.id);
     newButtonEdit.textContent = "Editar";
     newButtonEdit.setAttribute("data-action", "edit");
+    newButtonEdit.classList.add("task-action");
     newButtonDelete.textContent = "Excluir";
     newButtonDelete.setAttribute("data-action", "delete");
+    newButtonDelete.classList.add("task-action");
     newLi.append(newInput, newLabel, newButtonEdit, newButtonDelete);
     if (task.concluida) {
       newLi.classList.add("concluida");
@@ -128,6 +130,11 @@ btns.addEventListener("click", (event) => {
   if (!filter) {
     return;
   }
+  const btnsChildren = [...btns.children];
+  btnsChildren.forEach((btn) => {
+    btn.classList.remove("active");
+  });
+  event.target.classList.add("active");
   filterActive = filter;
   renderizarTarefas(getFilteredTasks());
 });

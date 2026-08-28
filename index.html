@@ -9,14 +9,18 @@
 </head>
 
 <body>
-  <div>
+  <div class="container">
     <form>
+      <h1>To-Do List</h1>
       <label for="texto">Adicionar Tarefa:</label>
-      <input type="text" class="texto" id="texto">
-      <button type="submit">Adicionar</button>
+      <div class="task-form-row">
+        <input type=" text" class="texto" id="texto">
+        <button type="submit" id="btn-add">Adicionar</button>
+      </div>
+
     </form>
     <div class="btns">
-      <button type="button" data-filter="all">Todas Tarefas</button>
+      <button type="button" data-filter="all" class="active">Todas Tarefas</button>
       <button type="button" data-filter="pending">Tarefas Pendentes</button>
       <button type="button" data-filter="completed">Tarefas Concluídas</button>
     </div>
